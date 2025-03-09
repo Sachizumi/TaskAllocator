@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Allocator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="Assets/Allocator.svg">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="Assets/Allocator.svg" alt="Task Allocator Logo" class="logo">
+  </div>
+
+  <div class="task-input">
+    <input type="text" id="taskName" placeholder="Task Name">
+    <input type="date" id="taskDate">
+    <input type="time" id="taskTime" placeholder="(e.g. 23:59)">
+    <input type="number" id="taskHours" placeholder="Estimated Hours">
+    <button id="addTask">Add Task</button>
+  </div>
+
+  <h2>Task List</h2>
+  <ul id="taskList"></ul>
+
+  <h2>Task Distribution Chart</h2>
+  <div class="chart-container">
+    <canvas id="taskChart"></canvas>
+  </div>
+
+  <!-- Overclocked pop-up (hidden by default) -->
+  <div id="overclockedPopup" class="hidden">
+    <img src="Assets/Overclocked.png" alt="Overclocked Warning">
+    <p>Warning: Task exceeds available time before the due date!</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
