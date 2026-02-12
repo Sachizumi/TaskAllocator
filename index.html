@@ -1,40 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Allocator</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/svg+xml" href="Assets/Allocator.svg">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
 <body>
   <div class="logo-container">
     <img src="Assets/Allocator.svg" alt="Task Allocator Logo" class="logo">
   </div>
 
-  <div class="task-input">
-    <input type="text" id="taskName" placeholder="Task Name">
-    <input type="date" id="taskDate">
-    <input type="time" id="taskTime" placeholder="(e.g. 23:59)">
-    <input type="number" id="taskHours" placeholder="Estimated Hours">
-    <button id="addTask">Add Task</button>
+  <!-- auth section -->
+  <div class="auth">
+    <input type="text" id="username" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+    <button id="logoutBtn" class="hidden">Logout</button>
   </div>
 
-  <h2>Task List</h2>
-  <ul id="taskList"></ul>
+  <!-- hidden until login -->
+  <div id="app" class="hidden">
+    <div class="task-input">
+      <input type="text" id="taskName" placeholder="Task Name">
+      <input type="date" id="taskDate">
+      <input type="time" id="taskTime">
+      <input type="number" id="taskHours" placeholder="Estimated Hours">
+      <button id="addTask">Add Task</button>
+    </div>
 
-  <h2>Task Distribution Chart</h2>
-  <div class="chart-container">
-    <canvas id="taskChart"></canvas>
+    <h2>Task List</h2>
+    <ul id="taskList"></ul>
+
+    <h2>Task Distribution Chart</h2>
+    <div class="chart-container">
+      <canvas id="taskChart"></canvas>
+    </div>
   </div>
 
-  <!-- Overclocked pop-up (hidden by default) -->
+  <!-- overclocked pop-up -->
   <div id="overclockedPopup" class="hidden">
     <img src="Assets/Overclocked.png" alt="Overclocked Warning">
     <p>Warning: Task exceeds available time before the due date!</p>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
-</html>
