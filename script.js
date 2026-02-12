@@ -1,6 +1,6 @@
 const supabaseClient = supabase.createClient(
   "https://ordpteeyjqppcmhrpodc.supabase.co",
-  "YOUR_ANON_KEY_HERE"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yZHB0ZWV5anFwcGNtaHJwb2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTcwNjUsImV4cCI6MjA4NjQzMzA2NX0.cwwWZk87oLMFQnG6KYla-J8M7Nckw86922YwbUzMb1I"
 );
 
 document.addEventListener("DOMContentLoaded", () => {
