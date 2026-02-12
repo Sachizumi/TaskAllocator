@@ -1,54 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Task Allocator</title>
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
   <div class="logo-container">
-    <img src="Assets/Allocator.svg" alt="Task Allocator Logo" class="logo">
+    <img src="Assets/Allocator.svg" alt="Task Allocator Logo" class="logo" />
   </div>
 
-  <!-- auth section -->
   <div class="auth">
-    <input type="text" id="username" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+    <input type="email" id="username" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
     <button id="loginBtn">Login</button>
     <button id="registerBtn">Register</button>
-    <button id="logoutBtn" class="hidden">Logout</button>
   </div>
 
-  <!-- hidden until login -->
+  <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+
+  <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+
   <div id="app" class="hidden">
     <div class="task-input">
-      <input type="text" id="taskName" placeholder="Task Name">
-      <input type="date" id="taskDate">
-      <input type="time" id="taskTime">
-      <input type="number" id="taskHours" placeholder="Estimated Hours">
+      <input type="text" id="taskName" placeholder="Task Name" />
+      <input type="date" id="taskDate" />
+      <input type="time" id="taskTime" />
+      <input type="number" id="taskHours" placeholder="Estimated Hours" />
+
+      <div class="priority-wrapper">
+        <label for="taskPriority" class="priority-label">
+          Priority & Urgency
+          <span class="info-tooltip">ⓘ
+            <span class="tooltip-text">
+              High → Scheduled earlier and allocated first.<br>
+              Medium → Balanced allocation.<br>
+              Low → Scheduled after higher priorities.
+            </span>
+          </span>
+        </label>
+
+        <select id="taskPriority">
+          <option value="high">High</option>
+          <option value="medium" selected>Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+
       <button id="addTask">Add Task</button>
     </div>
 
     <h2>Task List</h2>
     <ul id="taskList"></ul>
 
+<h2>Today's Capacity</h2>
+
+<div class="capacity-wrapper">
+  <div class="capacity-bar">
+    <div id="capacityFill" class="capacity-fill"></div>
+  </div>
+
+  <div id="todayCapacity" class="capacity-text"></div>
+</div>
+
     <h2>Task Distribution Chart</h2>
+
     <div class="chart-container">
       <canvas id="taskChart"></canvas>
     </div>
   </div>
 
-  <!-- overclocked pop-up -->
   <div id="overclockedPopup" class="hidden">
-    <img src="Assets/Overclocked.png" alt="Overclocked Warning">
+    <img src="Assets/Overclocked.png" />
     <p>Warning: Task exceeds available time before the due date!</p>
   </div>
 
-   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
