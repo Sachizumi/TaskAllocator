@@ -13,15 +13,24 @@
   </div>
 
   <div class="auth">
-    <input type="email" id="username" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+  <input type="text" id="username" placeholder="Email address">
+  <input type="password" id="password" placeholder="Password">
+
+  <div class="auth-actions fade-in">
     <button id="loginBtn">Login</button>
     <button id="registerBtn">Register</button>
   </div>
 
-  <button id="logoutBtn" class="logout-btn hidden">Logout</button>
+  <div id="authMessage" class="auth-message hidden"></div>
+  <button id="resendEmail" class="link-btn hidden">Resend verification email</button>
 
+</div>
+
+  <button id="logoutBtn" class="logout-btn hidden">Logout</button>
   <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+
+</div>
+
 
   <div id="app" class="hidden">
     <div class="task-input">
@@ -35,9 +44,9 @@
           Priority & Urgency
           <span class="info-tooltip">ⓘ
             <span class="tooltip-text">
-              High → Scheduled earlier and allocated first.<br>
-              Medium → Balanced allocation.<br>
-              Low → Scheduled after higher priorities.
+              High   - Scheduled earlier and allocated first.<br>
+              Medium - Balanced allocation.<br>
+              Low    - Scheduled after higher priorities.
             </span>
           </span>
         </label>
@@ -76,6 +85,12 @@
     <img src="Assets/Overclocked.png" />
     <p>Warning: Task exceeds available time before the due date!</p>
   </div>
+
+<div id="undoToast" class="undo-toast hidden">
+  Task deleted
+  <button id="undoBtn">Undo</button>
+  
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

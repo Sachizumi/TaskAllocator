@@ -18,6 +18,22 @@ body {
   animation: fadeIn 1.5s ease-out forwards;
 }
 
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -340,3 +356,43 @@ body.dark .capacity-negative {
 .capacity-safe { background-color: #198754; }
 .capacity-warning { background-color: #fd7e14; }
 .capacity-danger { background-color: #dc3545; }
+
+.auth-message {
+  margin-top: 12px;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  background: #d4edda;
+  color: #155724;
+}
+
+.auth-message.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.hidden {
+  display: none;
+}
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-message {
+  margin-top: 6px;
+  max-width: 420px;
+  align-self: center;
+}
+
+.auth-message {
+  animation: fadeIn 0.25s ease;
+}

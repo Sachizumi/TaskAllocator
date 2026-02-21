@@ -11,6 +11,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const registerBtn = document.getElementById("registerBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const app = document.getElementById("app");
+  const authMessage = document.getElementById("authMessage");
+
+function showAuthMessage(message, isError = false) {
+  authMessage.textContent = message;
+  authMessage.classList.remove("hidden");
+  authMessage.classList.toggle("error", isError);
+
+  if (isError) {
+    loginBtn.disabled = false;
+    registerBtn.disabled = false;
+    loginBtn.textContent = "Login";
+  }
+}
+
+function clearAuthMessage() {
+  authMessage.textContent = "";
+  authMessage.classList.add("hidden");
+  authMessage.classList.remove("error");
+}
 
   const taskNameInput = document.getElementById("taskName");
   const taskDateInput = document.getElementById("taskDate");
@@ -79,7 +98,6 @@ function updateTodayCapacity() {
     fill.classList.add("capacity-danger");
   }
 
-  // Format function
   function formatTime(decimalHours) {
     const hours = Math.floor(Math.abs(decimalHours));
     const minutes = Math.floor((Math.abs(decimalHours) % 1) * 60);
@@ -101,34 +119,84 @@ function updateTodayCapacity() {
     authSection.classList.add("hidden");
   }
 
-  function hideApp() {
-    app.classList.add("hidden");
-    logoutBtn.classList.add("hidden");
-    authSection.classList.remove("hidden");
+function hideApp() {
+  app.classList.add("hidden");
+  logoutBtn.classList.add("hidden");
+  authSection.classList.remove("hidden");
+  
+  loginBtn.disabled = false;
+  registerBtn.disabled = false;
+  loginBtn.textContent = "Login";
+
+  usernameInput.value = "";
+  passwordInput.value = "";
+
+  clearAuthMessage();
+}
+
+authSection.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault(); 
+    loginBtn.click(); 
   }
+});
 
   loginBtn.addEventListener("click", async () => {
+    loginBtn.disabled = true;
+    registerBtn.disabled = true;
+    loginBtn.textContent = "Logging in…";
+
     const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: usernameInput.value,
       password: passwordInput.value
     });
 
-    if (error) return alert(error.message);
+    if (error) {
+  showAuthMessage(
+    "❌ Invalid login credentials. If you just registered, please verify your email first.",
+    true
+  );
+  return;
+}
 
     currentUser = data.user;
     showApp();
     await loadTasks();
   });
 
-  registerBtn.addEventListener("click", async () => {
-    const { error } = await supabaseClient.auth.signUp({
-      email: usernameInput.value,
-      password: passwordInput.value
-    });
+registerBtn.addEventListener("click", async () => {
+  clearAuthMessage();
 
-    if (error) return alert(error.message);
-    alert("Check your email to verify your account.");
+  const email = usernameInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    showAuthMessage("Please enter an email and password.", true);
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
   });
+
+  if (error) {
+    showAuthMessage(error.message, true);
+    return;
+  }
+
+  showAuthMessage(
+    "✅ Registration successful! Please check your email for a verification code. " +
+    "If you don’t see it within a few minutes, check your spam or promotions folder."
+  );
+
+  setTimeout(() => {
+    showAuthMessage(
+      "Still nothing? Some email providers delay verification emails. " +
+      "You can safely keep this tab open while waiting."
+    );
+  }, 12000);
+});
 
   logoutBtn.addEventListener("click", async () => {
     await supabaseClient.auth.signOut();
