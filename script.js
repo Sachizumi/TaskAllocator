@@ -226,12 +226,13 @@ registerBtn.addEventListener("click", async () => {
     if (error) return console.error(error);
 
     tasks = data.map(t => ({
-      id: t.id,
-      name: t.name,
-      deadline: new Date(t.deadline),
-      hours: t.hours,
-      priority: t.priority || "medium"
-    }));
+  id: t.id,
+  name: t.name,
+  deadline: new Date(t.deadline),
+  hours: t.hours,
+  priority: t.priority || "medium",
+  createdAt: new Date(t.created_at)
+}));
 
     rebuildChart();
     renderTaskList();
@@ -323,27 +324,35 @@ registerBtn.addEventListener("click", async () => {
   }
 
   function distributeTaskHours(task) {
-    const now = new Date();
-    const days = Math.max(
-      1,
-      Math.ceil((task.deadline - now) / (1000 * 60 * 60 * 24))
-    );
+  const start = task.createdAt;
+  const end = task.deadline;
 
-    const daily = task.hours / days;
-    const color = getPriorityColor(task.priority);
+  const totalDays = Math.max(
+    1,
+    Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+  );
 
-    taskData.datasets.push({
-      label: `${task.name} (${task.priority})`,
-      data: Array(days).fill(daily),
-      backgroundColor: color
-    });
+  const daily = task.hours / totalDays;
+  const color = getPriorityColor(task.priority);
 
-    taskData.labels = Array.from({ length: days }, (_, i) => {
-      const d = new Date(now);
-      d.setDate(now.getDate() + i);
-      return d.toISOString().split("T")[0];
-    });
-  }
+  const today = new Date();
+  const daysRemaining = Math.max(
+    1,
+    Math.ceil((end - today) / (1000 * 60 * 60 * 24))
+  );
+
+  taskData.datasets.push({
+    label: `${task.name} (${task.priority})`,
+    data: Array(daysRemaining).fill(daily),
+    backgroundColor: color
+  });
+
+  taskData.labels = Array.from({ length: daysRemaining }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    return d.toISOString().split("T")[0];
+  });
+}
 
   function renderTaskList() {
     taskList.innerHTML = "";
