@@ -12,26 +12,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const app = document.getElementById("app");
   const authMessage = document.getElementById("authMessage");
+  
+  function showAuthMessage(message, isError = false) {
+    authMessage.textContent = message;
+    authMessage.classList.remove("hidden");
+    authMessage.classList.toggle("error", isError);
 
-function showAuthMessage(message, isError = false) {
-  authMessage.textContent = message;
-  authMessage.classList.remove("hidden");
-  authMessage.classList.toggle("error", isError);
-
-  if (isError) {
-    loginBtn.disabled = false;
-    registerBtn.disabled = false;
-    loginBtn.textContent = "Login";
+    if (isError) {
+      loginBtn.disabled = false;
+      registerBtn.disabled = false;
+      loginBtn.textContent = "Login";
+    }
   }
-}
 
-function clearAuthMessage() {
-  authMessage.textContent = "";
-  authMessage.classList.add("hidden");
-  authMessage.classList.remove("error");
-}
+  function clearAuthMessage() {
+    authMessage.textContent = "";
+    authMessage.classList.add("hidden");
+    authMessage.classList.remove("error");
+  }
 
   const taskNameInput = document.getElementById("taskName");
+  const taskMinutesInput = document.getElementById("taskMinutes");
   const taskDateInput = document.getElementById("taskDate");
   const taskTimeInput = document.getElementById("taskTime");
   const taskHoursInput = document.getElementById("taskHours");
@@ -42,9 +43,9 @@ function clearAuthMessage() {
   const overclockedPopup = document.getElementById("overclockedPopup");
   const themeToggle = document.getElementById("themeToggle");
 
-setInterval(() => {
-  updateTodayCapacity();
-}, 60000);
+  setInterval(() => {
+    updateTodayCapacity();
+  }, 60000);
 
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark");
@@ -63,55 +64,55 @@ setInterval(() => {
   let taskChart;
   let taskData = { labels: [], datasets: [] };
 
-function updateTodayCapacity() {
-  const textDisplay = document.getElementById("todayCapacity");
-  const fill = document.getElementById("capacityFill");
+  function updateTodayCapacity() {
+    const textDisplay = document.getElementById("todayCapacity");
+    const fill = document.getElementById("capacityFill");
 
-  if (!textDisplay || !fill) return;
+    if (!textDisplay || !fill) return;
 
-  const now = new Date();
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
+    const now = new Date();
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
 
-  const remainingToday = (endOfDay - now) / 36e5;
-  let todayAllocated = 0;
+    const remainingToday = (endOfDay - now) / 36e5;
+    let todayAllocated = 0;
 
-  taskData.datasets.forEach(dataset => {
-    if (dataset.data && dataset.data.length > 0) {
-      todayAllocated += dataset.data[0];
+    taskData.datasets.forEach(dataset => {
+      if (dataset.data && dataset.data.length > 0) {
+        todayAllocated += dataset.data[0];
+      }
+    });
+
+    const freeHours = remainingToday - todayAllocated;
+
+    const percentUsed = (todayAllocated / remainingToday) * 100;
+    const usedClamped = Math.min(percentUsed, 100);
+    fill.style.width = `${usedClamped}%`;
+
+    fill.classList.remove("capacity-safe", "capacity-warning", "capacity-danger");
+
+    if (percentUsed < 60) {
+      fill.classList.add("capacity-safe");
+    } else if (percentUsed < 90) {
+      fill.classList.add("capacity-warning");
+    } else {
+      fill.classList.add("capacity-danger");
     }
-  });
 
-  const freeHours = remainingToday - todayAllocated;
+    function formatTime(decimalHours) {
+      const hours = Math.floor(Math.abs(decimalHours));
+      const minutes = Math.floor((Math.abs(decimalHours) % 1) * 60);
+      return `${hours}h ${minutes}m`;
+    }
 
-  const percentUsed = (todayAllocated / remainingToday) * 100;
-  const usedClamped = Math.min(percentUsed, 100);
-  fill.style.width = `${usedClamped}%`;
-
-  fill.classList.remove("capacity-safe", "capacity-warning", "capacity-danger");
-
-  if (percentUsed < 60) {
-    fill.classList.add("capacity-safe");
-  } else if (percentUsed < 90) {
-    fill.classList.add("capacity-warning");
-  } else {
-    fill.classList.add("capacity-danger");
+    if (freeHours >= 0) {
+      textDisplay.textContent =
+        `Used: ${formatTime(todayAllocated)} • Remaining: ${formatTime(freeHours)}`;
+    } else {
+      textDisplay.textContent =
+        `Overbooked by ${formatTime(freeHours)}`;
+    }
   }
-
-  function formatTime(decimalHours) {
-    const hours = Math.floor(Math.abs(decimalHours));
-    const minutes = Math.floor((Math.abs(decimalHours) % 1) * 60);
-    return `${hours}h ${minutes}m`;
-  }
-
-  if (freeHours >= 0) {
-    textDisplay.textContent =
-      `Used: ${formatTime(todayAllocated)} • Remaining: ${formatTime(freeHours)}`;
-  } else {
-    textDisplay.textContent =
-      `Overbooked by ${formatTime(freeHours)}`;
-  }
-}
 
   function showApp() {
     app.classList.remove("hidden");
@@ -119,27 +120,27 @@ function updateTodayCapacity() {
     authSection.classList.add("hidden");
   }
 
-function hideApp() {
-  app.classList.add("hidden");
-  logoutBtn.classList.add("hidden");
-  authSection.classList.remove("hidden");
-  
-  loginBtn.disabled = false;
-  registerBtn.disabled = false;
-  loginBtn.textContent = "Login";
+  function hideApp() {
+    app.classList.add("hidden");
+    logoutBtn.classList.add("hidden");
+    authSection.classList.remove("hidden");
 
-  usernameInput.value = "";
-  passwordInput.value = "";
+    loginBtn.disabled = false;
+    registerBtn.disabled = false;
+    loginBtn.textContent = "Login";
 
-  clearAuthMessage();
-}
+    usernameInput.value = "";
+    passwordInput.value = "";
 
-authSection.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault(); 
-    loginBtn.click(); 
+    clearAuthMessage();
   }
-});
+
+  authSection.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); 
+      loginBtn.click(); 
+    }
+  });
 
   loginBtn.addEventListener("click", async () => {
     loginBtn.disabled = true;
@@ -152,51 +153,51 @@ authSection.addEventListener("keydown", (e) => {
     });
 
     if (error) {
-  showAuthMessage(
-    "❌ Invalid login credentials. If you just registered, please verify your email first.",
-    true
-  );
-  return;
-}
+      showAuthMessage(
+        "❌ Invalid login credentials. If you just registered, please verify your email first.",
+        true
+      );
+      return;
+    }
 
     currentUser = data.user;
     showApp();
     await loadTasks();
   });
 
-registerBtn.addEventListener("click", async () => {
-  clearAuthMessage();
+  registerBtn.addEventListener("click", async () => {
+    clearAuthMessage();
 
-  const email = usernameInput.value.trim();
-  const password = passwordInput.value;
+    const email = usernameInput.value.trim();
+    const password = usernameInput.value;
 
-  if (!email || !password) {
-    showAuthMessage("Please enter an email and password.", true);
-    return;
-  }
+    if (!email || !password) {
+      showAuthMessage("Please enter an email and password.", true);
+      return;
+    }
 
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password
-  });
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password
+    });
 
-  if (error) {
-    showAuthMessage(error.message, true);
-    return;
-  }
+    if (error) {
+      showAuthMessage(error.message, true);
+      return;
+    }
 
-  showAuthMessage(
-    "✅ Registration successful! Please check your email for a verification code. " +
-    "If you don’t see it within a few minutes, check your spam or promotions folder."
-  );
-
-  setTimeout(() => {
     showAuthMessage(
-      "Still nothing? Some email providers delay verification emails. " +
-      "You can safely keep this tab open while waiting."
+      "✅ Registration successful! Please check your email for a verification code. " +
+      "If you don’t see it within a few minutes, check your spam or promotions folder."
     );
-  }, 12000);
-});
+
+    setTimeout(() => {
+      showAuthMessage(
+        "Still nothing? Some email providers delay verification emails. " +
+        "You can safely keep this tab open while waiting."
+      );
+    }, 12000);
+  });
 
   logoutBtn.addEventListener("click", async () => {
     await supabaseClient.auth.signOut();
@@ -218,21 +219,36 @@ registerBtn.addEventListener("click", async () => {
   });
 
   async function loadTasks() {
+    if (!currentUser) return; 
+
+    const nowISO = new Date().toISOString();
+
+    await supabaseClient
+      .from("tasks")
+      .delete()
+      .lt("deadline", nowISO)
+      .eq("user_id", currentUser.id);
+
     const { data, error } = await supabaseClient
       .from("tasks")
       .select("*")
+      .eq("user_id", currentUser.id)
       .order("created_at", { ascending: true });
 
     if (error) return console.error(error);
 
-    tasks = data.map(t => ({
-  id: t.id,
-  name: t.name,
-  deadline: new Date(t.deadline),
-  hours: t.hours,
-  priority: t.priority || "medium",
-  createdAt: new Date(t.created_at)
-}));
+    const now = new Date();
+
+    tasks = data
+      .filter(t => new Date(t.deadline) > now)
+      .map(t => ({
+        id: t.id,
+        name: t.name,
+        deadline: new Date(t.deadline),
+        hours: t.hours,
+        priority: t.priority || "medium",
+        createdAt: new Date(t.created_at)
+      }));
 
     rebuildChart();
     renderTaskList();
@@ -261,14 +277,10 @@ registerBtn.addEventListener("click", async () => {
 
   function getPriorityColor(priority) {
     switch (priority) {
-      case "high":
-        return "#dc3545";
-      case "medium":
-        return "#fd7e14";
-      case "low":
-        return "#198754";
-      default:
-        return "#6c757d";
+      case "high": return "#dc3545";
+      case "medium": return "#fd7e14";
+      case "low": return "#198754";
+      default: return "#6c757d";
     }
   }
 
@@ -287,10 +299,8 @@ registerBtn.addEventListener("click", async () => {
           x: {
             stacked: true,
             ticks: {
-              color: c =>
-                taskData.labels[c.index] === today ? "#dc3545" : "#666",
-              font: c =>
-                taskData.labels[c.index] === today ? { weight: "bold" } : {}
+              color: c => taskData.labels[c.index] === today ? "#dc3545" : "#666",
+              font: c => taskData.labels[c.index] === today ? { weight: "bold" } : {}
             }
           },
           y: { stacked: true, beginAtZero: true }
@@ -307,9 +317,24 @@ registerBtn.addEventListener("click", async () => {
   }
 
   function rebuildChart() {
+    const now = new Date();
+    tasks = tasks.filter(task => task.deadline > now);
+
     taskData = { labels: [], datasets: [] };
 
     const priorityOrder = { high: 1, medium: 2, low: 3 };
+
+    const latestDeadline = tasks.reduce(
+      (max, t) => (t.deadline > max ? t.deadline : max),
+      now
+    );
+
+    const totalDays = Math.ceil((latestDeadline - now) / (1000 * 60 * 60 * 24)) + 1;
+    taskData.labels = Array.from({ length: totalDays }, (_, i) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      return d.toISOString().split("T")[0];
+    });
 
     tasks
       .slice()
@@ -324,35 +349,32 @@ registerBtn.addEventListener("click", async () => {
   }
 
   function distributeTaskHours(task) {
-  const start = task.createdAt;
-  const end = task.deadline;
+    const today = new Date();
+    const start = task.createdAt;
+    const end = task.deadline;
 
-  const totalDays = Math.max(
-    1,
-    Math.ceil((end - start) / (1000 * 60 * 60 * 24))
-  );
+    if (end <= today) return;
 
-  const daily = task.hours / totalDays;
-  const color = getPriorityColor(task.priority);
+    const totalDays = Math.max(
+      1,
+      Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+    );
 
-  const today = new Date();
-  const daysRemaining = Math.max(
-    1,
-    Math.ceil((end - today) / (1000 * 60 * 60 * 24))
-  );
+    const daily = task.hours / totalDays;
+    const color = getPriorityColor(task.priority);
 
-  taskData.datasets.push({
-    label: `${task.name} (${task.priority})`,
-    data: Array(daysRemaining).fill(daily),
-    backgroundColor: color
-  });
+    const data = taskData.labels.map(label => {
+      const labelDate = new Date(label);
+      if (labelDate >= start && labelDate <= end) return daily;
+      return 0;
+    });
 
-  taskData.labels = Array.from({ length: daysRemaining }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    return d.toISOString().split("T")[0];
-  });
-}
+    taskData.datasets.push({
+      label: `${task.name} (${task.priority})`,
+      data,
+      backgroundColor: color
+    });
+  }
 
   function renderTaskList() {
     taskList.innerHTML = "";
@@ -398,6 +420,7 @@ registerBtn.addEventListener("click", async () => {
     });
   }
 
+  // --- SINGLE addTaskButton LISTENER ---
   addTaskButton.addEventListener("click", async e => {
     e.preventDefault();
     if (!currentUser) return alert("Login required.");
@@ -405,27 +428,40 @@ registerBtn.addEventListener("click", async () => {
     const name = taskNameInput.value.trim();
     const date = taskDateInput.value;
     const time = taskTimeInput.value || "23:59";
-    const hours = parseFloat(taskHoursInput.value);
+
+    const hours = parseInt(taskHoursInput.value) || 0;
+    const minutes = parseInt(taskMinutesInput.value) || 0;
+
+    const totalHours = hours + minutes / 60;
     const priority = taskPriorityInput.value;
 
-    if (!name || !date || hours <= 0) return alert("Invalid task.");
+    if (!name || !date || totalHours <= 0) return alert("Invalid task.");
 
     const deadline = new Date(`${date}T${time}`);
     const available = (deadline - new Date()) / 36e5;
 
-    if (hours > available) {
+    if (totalHours > available) {
       overclockedPopup.classList.remove("hidden");
       setTimeout(() => overclockedPopup.classList.add("hidden"), 3000);
       return;
     }
 
-    await saveTask({ name, deadline, hours, priority });
+    await saveTask({ name, deadline, hours: totalHours, priority });
     await loadTasks();
 
     taskNameInput.value = "";
     taskDateInput.value = "";
     taskTimeInput.value = "";
     taskHoursInput.value = "";
+    taskMinutesInput.value = "";
     taskPriorityInput.value = "medium";
   });
+
+  taskHoursInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTaskButton.click();
+    }
+  });
+
 });
