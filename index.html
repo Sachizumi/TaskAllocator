@@ -37,7 +37,8 @@
       <input type="text" id="taskName" placeholder="Task Name" />
       <input type="date" id="taskDate" />
       <input type="time" id="taskTime" />
-      <input type="number" id="taskHours" placeholder="Estimated Hours" />
+      <input type="number" id="taskHours" placeholder="Hours" min="0" />
+      <input type="number" id="taskMinutes" placeholder="Minutes" min="0" max="59" />
 
       <div class="priority-wrapper">
         <label for="taskPriority" class="priority-label">
@@ -85,10 +86,6 @@
     <img src="Assets/Overclocked.png" />
     <p>Warning: Task exceeds available time before the due date!</p>
   </div>
-
-<div id="undoToast" class="undo-toast hidden">
-  Task deleted
-  <button id="undoBtn">Undo</button>
   
 </div>
 
